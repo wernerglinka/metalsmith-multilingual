@@ -3,7 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, it } from 'node:test';
 import Metalsmith from 'metalsmith';
-import i18n from '../src/index.js';
+import multilingual from '../src/index.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -24,13 +24,13 @@ function process(ms) {
   });
 }
 
-describe('metalsmith-i18n (ESM)', () => {
+describe('metalsmith-multilingual', () => {
   it('should export a function', () => {
-    assert.strictEqual(typeof i18n, 'function');
+    assert.strictEqual(typeof multilingual, 'function');
   });
 
   it('should return a metalsmith plugin function', () => {
-    const plugin = i18n();
+    const plugin = multilingual();
     assert.strictEqual(typeof plugin, 'function');
     assert.strictEqual(plugin.length, 3);
   });
@@ -38,7 +38,7 @@ describe('metalsmith-i18n (ESM)', () => {
   describe('basic locale detection', () => {
     it('should set locale on each file', async () => {
       const files = await process(
-        Metalsmith(path.join(__dirname, 'fixtures', 'basic')).use(i18n())
+        Metalsmith(path.join(__dirname, 'fixtures', 'basic')).use(multilingual())
       );
       assert.strictEqual(files['index.md'].locale, 'en');
       assert.strictEqual(files['works/2026.03.002.md'].locale, 'en');
@@ -48,7 +48,7 @@ describe('metalsmith-i18n (ESM)', () => {
 
     it('should set isDefaultLocale correctly', async () => {
       const files = await process(
-        Metalsmith(path.join(__dirname, 'fixtures', 'basic')).use(i18n())
+        Metalsmith(path.join(__dirname, 'fixtures', 'basic')).use(multilingual())
       );
       assert.strictEqual(files['index.md'].isDefaultLocale, true);
       assert.strictEqual(files['works/2026.03.002.md'].isDefaultLocale, true);
@@ -60,7 +60,7 @@ describe('metalsmith-i18n (ESM)', () => {
   describe('hreflang generation', () => {
     it('should build hreflang with self + alternate + x-default', async () => {
       const files = await process(
-        Metalsmith(path.join(__dirname, 'fixtures', 'basic')).use(i18n())
+        Metalsmith(path.join(__dirname, 'fixtures', 'basic')).use(multilingual())
       );
       const hreflang = files['index.md'].hreflang;
       assert.strictEqual(hreflang.length, 3);
@@ -71,7 +71,7 @@ describe('metalsmith-i18n (ESM)', () => {
 
     it('should build hreflang for German pages', async () => {
       const files = await process(
-        Metalsmith(path.join(__dirname, 'fixtures', 'basic')).use(i18n())
+        Metalsmith(path.join(__dirname, 'fixtures', 'basic')).use(multilingual())
       );
       const hreflang = files['de/werke/2026.03.002.md'].hreflang;
       assert.strictEqual(hreflang.length, 3);
@@ -82,24 +82,24 @@ describe('metalsmith-i18n (ESM)', () => {
   });
 
   describe('global metadata', () => {
-    it('should set i18n metadata on metalsmith', async () => {
+    it('should set multilingual metadata on metalsmith.metadata()', async () => {
       const ms = Metalsmith(path.join(__dirname, 'fixtures', 'basic'));
-      await process(ms.use(i18n()));
+      await process(ms.use(multilingual()));
       const meta = ms.metadata();
-      assert.ok(meta.i18n);
-      assert.strictEqual(meta.i18n.defaultLocale, 'en');
-      assert.strictEqual(meta.i18n.locales.length, 2);
-      assert.ok(meta.i18n.locales.find((l) => l.code === 'en' && l.isDefault === true));
-      assert.ok(meta.i18n.locales.find((l) => l.code === 'de' && l.isDefault === false));
-      assert.strictEqual(meta.i18n.localeLabels.en, 'English');
-      assert.strictEqual(meta.i18n.localeLabels.de, 'Deutsch');
+      assert.ok(meta.multilingual);
+      assert.strictEqual(meta.multilingual.defaultLocale, 'en');
+      assert.strictEqual(meta.multilingual.locales.length, 2);
+      assert.ok(meta.multilingual.locales.find((l) => l.code === 'en' && l.isDefault === true));
+      assert.ok(meta.multilingual.locales.find((l) => l.code === 'de' && l.isDefault === false));
+      assert.strictEqual(meta.multilingual.localeLabels.en, 'English');
+      assert.strictEqual(meta.multilingual.localeLabels.de, 'Deutsch');
     });
   });
 
   describe('no alternates', () => {
     it('should produce self-only hreflang when no alternate data exists', async () => {
       const files = await process(
-        Metalsmith(path.join(__dirname, 'fixtures', 'no-alternates')).use(i18n())
+        Metalsmith(path.join(__dirname, 'fixtures', 'no-alternates')).use(multilingual())
       );
       const hreflang = files['index.md'].hreflang;
       assert.strictEqual(hreflang.length, 1);
@@ -112,7 +112,7 @@ describe('metalsmith-i18n (ESM)', () => {
     it('should handle three-language setup', async () => {
       const files = await process(
         Metalsmith(path.join(__dirname, 'fixtures', 'three-locales')).use(
-          i18n({
+          multilingual({
             locales: ['en', 'de', 'fr'],
             localeLabels: { en: 'English', de: 'Deutsch', fr: 'Francais' }
           })
@@ -134,7 +134,7 @@ describe('metalsmith-i18n (ESM)', () => {
     it('should accept custom defaultLocale', async () => {
       const files = await process(
         Metalsmith(path.join(__dirname, 'fixtures', 'basic')).use(
-          i18n({
+          multilingual({
             defaultLocale: 'de',
             locales: ['en', 'de']
           })
@@ -150,32 +150,32 @@ describe('metalsmith-i18n (ESM)', () => {
       const ms = Metalsmith(path.join(__dirname, 'fixtures', 'basic'));
       await process(
         ms.use(
-          i18n({
+          multilingual({
             localeLabels: { en: 'EN', de: 'DE' }
           })
         )
       );
-      assert.strictEqual(ms.metadata().i18n.localeLabels.en, 'EN');
-      assert.strictEqual(ms.metadata().i18n.localeLabels.de, 'DE');
+      assert.strictEqual(ms.metadata().multilingual.localeLabels.en, 'EN');
+      assert.strictEqual(ms.metadata().multilingual.localeLabels.de, 'DE');
     });
   });
 
   describe('validation', () => {
     it('should throw for empty locales array', () => {
       assert.throws(() => {
-        i18n({ locales: [] });
+        multilingual({ locales: [] });
       }, /locales must be a non-empty array/);
     });
 
     it('should throw when defaultLocale is not in locales', () => {
       assert.throws(() => {
-        i18n({ defaultLocale: 'fr', locales: ['en', 'de'] });
+        multilingual({ defaultLocale: 'fr', locales: ['en', 'de'] });
       }, /defaultLocale "fr" must be included in locales/);
     });
 
     it('should throw when pathPattern has no {locale} placeholder', () => {
       assert.throws(() => {
-        i18n({ pathPattern: '**/*.md' });
+        multilingual({ pathPattern: '**/*.md' });
       }, /pathPattern must contain the \{locale\} placeholder/);
     });
   });

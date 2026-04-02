@@ -1,4 +1,4 @@
-# metalsmith-i18n
+# metalsmith-multilingual
 
 A Metalsmith plugin that adds internationalization metadata to files based on directory structure and frontmatter alternate links
 
@@ -7,8 +7,8 @@ A Metalsmith plugin that adds internationalization metadata to files based on di
 [![license: MIT][license-badge]][license-url]
 [![coverage][coverage-badge]][coverage-url]
 [![ESM][modules-badge]][npm-url]
-[![Known Vulnerabilities](https://snyk.io/test/npm/metalsmith-i18n/badge.svg)](https://snyk.io/test/npm/metalsmith-i18n)
-[![AI-assisted development](https://img.shields.io/badge/AI-assisted-blue)](https://github.com/wernerglinka/metalsmith-i18n/blob/main/CLAUDE.md)
+[![Known Vulnerabilities](https://snyk.io/test/npm/metalsmith-multilingual/badge.svg)](https://snyk.io/test/npm/metalsmith-multilingual)
+[![AI-assisted development](https://img.shields.io/badge/AI-assisted-blue)](https://github.com/wernerglinka/metalsmith-multilingual/blob/main/CLAUDE.md)
 
 > This Metalsmith plugin is under active development. The API is stable, but breaking changes may occur before reaching 1.0.0.
 
@@ -16,30 +16,30 @@ A Metalsmith plugin that adds internationalization metadata to files based on di
 
 - **Directory-based locale detection** - Detects each file's locale from its path (e.g. files under `de/` are German)
 - **hreflang generation** - Builds `<link rel="alternate" hreflang="...">` data from frontmatter cross-references
-- **Global i18n metadata** - Exposes locale configuration via `metalsmith.metadata()` for templates
+- **Global multilingual metadata** - Exposes locale configuration via `metalsmith.metadata()` for templates
 - **Configurable path patterns** - Supports custom directory structures for locale detection
 - **Configurable alternate key** - Reads cross-language links from any frontmatter path via dot notation
 - **Translated URL slugs** - Works with fully translated paths (e.g. `works/` vs `werke/`), not just locale prefixes
-- **ESM module**: `import i18n from 'metalsmith-i18n'`
+- **ESM module**: `import multilingual from 'metalsmith-multilingual'`
 
 ## Installation
 
 ```bash
-npm install metalsmith-i18n
+npm install metalsmith-multilingual
 ```
 
 ## Usage
 
-Pass `metalsmith-i18n` to `metalsmith.use`:
+Pass `metalsmith-multilingual` to `metalsmith.use`:
 
 ### Basic Usage
 
 ```js
 import Metalsmith from 'metalsmith';
-import i18n from 'metalsmith-i18n';
+import multilingual from 'metalsmith-multilingual';
 
 Metalsmith(__dirname)
-  .use(i18n())
+  .use(multilingual())
   .build((err) => {
     if (err) throw err;
   });
@@ -49,11 +49,11 @@ Metalsmith(__dirname)
 
 ```js
 import Metalsmith from 'metalsmith';
-import i18n from 'metalsmith-i18n';
+import multilingual from 'metalsmith-multilingual';
 
 Metalsmith(__dirname)
   .use(
-    i18n({
+    multilingual({
       defaultLocale: 'en',
       locales: ['en', 'de'],
       pathPattern: '{locale}/**',
@@ -78,7 +78,7 @@ Metalsmith(__dirname)
 
 ## How It Works
 
-The plugin detects each file's locale from its path and enriches it with i18n metadata. It expects your content to be organized with locale-specific directories and frontmatter cross-references between language versions.
+The plugin detects each file's locale from its path and enriches it with multilingual metadata. It expects your content to be organized with locale-specific directories and frontmatter cross-references between language versions.
 
 ### Content Structure
 
@@ -139,7 +139,7 @@ Example `hreflang` output for the English homepage:
 
 ### Global Metadata
 
-The plugin adds an `i18n` object to `metalsmith.metadata()`:
+The plugin adds a `multilingual` object to `metalsmith.metadata()`:
 
 ```json
 {
@@ -160,23 +160,23 @@ This plugin is tested using Node's built-in test runner (`node:test`) with built
 
 ## Debug
 
-To enable debug logs, set the `DEBUG` environment variable to `metalsmith-i18n*`:
+To enable debug logs, set the `DEBUG` environment variable to `metalsmith-multilingual*`:
 
 ```js
-metalsmith.env('DEBUG', 'metalsmith-i18n*');
+metalsmith.env('DEBUG', 'metalsmith-multilingual*');
 ```
 
 Alternatively, you can set `DEBUG` to `metalsmith:*` to debug all Metalsmith plugins.
 
 ## CLI Usage
 
-To use this plugin with the Metalsmith CLI, add `metalsmith-i18n` to the `plugins` key in your `metalsmith.json` file:
+To use this plugin with the Metalsmith CLI, add `metalsmith-multilingual` to the `plugins` key in your `metalsmith.json` file:
 
 ```json
 {
   "plugins": [
     {
-      "metalsmith-i18n": {
+      "metalsmith-multilingual": {
         "defaultLocale": "en",
         "locales": ["en", "de"],
         "alternateKey": "seo.alternate",
@@ -204,11 +204,11 @@ Portions of this project were developed with the assistance of AI tools includin
 
 All AI-assisted code has been reviewed and tested to ensure it meets project standards. See the included [CLAUDE.md](CLAUDE.md) for more details.
 
-[npm-badge]: https://img.shields.io/npm/v/metalsmith-i18n.svg
-[npm-url]: https://www.npmjs.com/package/metalsmith-i18n
+[npm-badge]: https://img.shields.io/npm/v/metalsmith-multilingual.svg
+[npm-url]: https://www.npmjs.com/package/metalsmith-multilingual
 [metalsmith-badge]: https://img.shields.io/badge/metalsmith-plugin-green.svg?longCache=true
 [metalsmith-url]: https://metalsmith.io
-[license-badge]: https://img.shields.io/github/license/wernerglinka/metalsmith-i18n
+[license-badge]: https://img.shields.io/github/license/wernerglinka/metalsmith-multilingual
 [license-url]: LICENSE
 [coverage-badge]: https://img.shields.io/badge/test%20coverage-99%25-brightgreen
 [coverage-url]: #test-coverage

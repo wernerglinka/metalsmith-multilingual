@@ -3,7 +3,7 @@ import { compilePathPattern, detectLocale } from './utils/locale-detector.js';
 import { filepathToUrl, buildHreflang } from './utils/hreflang-builder.js';
 
 /**
- * @typedef {Object} I18nOptions
+ * @typedef {Object} MultilingualOptions
  * @property {string} [defaultLocale='en'] - Fallback locale code
  * @property {string[]} [locales=['en', 'de']] - Supported locale codes
  * @property {string} [pathPattern='{locale}/**'] - Pattern for detecting locale from file path
@@ -11,7 +11,7 @@ import { filepathToUrl, buildHreflang } from './utils/hreflang-builder.js';
  * @property {Object<string, string>} [localeLabels] - Map of locale codes to human-readable labels
  */
 
-/** @type {I18nOptions} */
+/** @type {MultilingualOptions} */
 const DEFAULTS = {
   defaultLocale: 'en',
   locales: ['en', 'de'],
@@ -23,7 +23,7 @@ const DEFAULTS = {
 /**
  * Validates plugin configuration and throws on invalid options.
  *
- * @param {I18nOptions} config - Merged plugin configuration
+ * @param {MultilingualOptions} config - Merged plugin configuration
  */
 function validateConfig(config) {
   if (!Array.isArray(config.locales) || config.locales.length === 0) {
@@ -43,13 +43,13 @@ function validateConfig(config) {
  * A Metalsmith plugin that adds internationalization metadata to files.
  *
  * Detects each file's locale from its path, builds hreflang cross-references
- * from frontmatter alternate links, and exposes global i18n configuration
+ * from frontmatter alternate links, and exposes global multilingual configuration
  * via metalsmith.metadata().
  *
- * @param {I18nOptions} [options={}] - Plugin configuration
+ * @param {MultilingualOptions} [options={}] - Plugin configuration
  * @returns {import('metalsmith').Plugin} Metalsmith plugin function
  */
-function i18n(options = {}) {
+function multilingual(options = {}) {
   const config = { ...DEFAULTS, ...options };
 
   validateConfig(config);
@@ -57,7 +57,7 @@ function i18n(options = {}) {
   const localePattern = compilePathPattern(config.pathPattern, config.locales);
 
   const metalsmithPlugin = function (files, metalsmith, done) {
-    const debug = metalsmith.debug('metalsmith-i18n');
+    const debug = metalsmith.debug('metalsmith-multilingual');
 
     try {
       debug('Starting with config: %O', {
@@ -68,7 +68,7 @@ function i18n(options = {}) {
       });
 
       const metadata = metalsmith.metadata();
-      metadata.i18n = {
+      metadata.multilingual = {
         defaultLocale: config.defaultLocale,
         locales: config.locales.map((code) => ({
           code,
@@ -97,18 +97,18 @@ function i18n(options = {}) {
       debug('Processed %d files', filePaths.length);
       done();
     } catch (error) {
-      done(new Error(`metalsmith-i18n: ${error.message}`));
+      done(new Error(`metalsmith-multilingual: ${error.message}`));
     }
   };
 
   Object.defineProperty(metalsmithPlugin, 'name', {
-    value: 'metalsmith-i18n',
+    value: 'metalsmith-multilingual',
     configurable: true
   });
 
   return metalsmithPlugin;
 }
 
-Object.defineProperty(i18n, 'name', { value: 'metalsmith-i18n' });
+Object.defineProperty(multilingual, 'name', { value: 'metalsmith-multilingual' });
 
-export default i18n;
+export default multilingual;

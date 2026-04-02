@@ -1,5 +1,5 @@
 {
-  "name": "metalsmith-i18n",
+  "name": "metalsmith-multilingual",
   "version": "0.0.2",
   "description": "A Metalsmith plugin that adds internationalization metadata to files based on directory structure and frontmatter alternate links",
   "type": "module",
@@ -25,7 +25,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/wernerglinka/metalsmith-i18n"
+    "url": "https://github.com/wernerglinka/metalsmith-multilingual"
   },
   "keywords": [
     "metalsmith",
@@ -44,9 +44,9 @@
   "author": "Werner Glinka <werner@glinka.co>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/wernerglinka/metalsmith-i18n/issues"
+    "url": "https://github.com/wernerglinka/metalsmith-multilingual/issues"
   },
-  "homepage": "https://github.com/wernerglinka/metalsmith-i18n",
+  "homepage": "https://github.com/wernerglinka/metalsmith-multilingual",
   "devDependencies": {
     "auto-changelog": "^2.5.0",
     "eslint": "^9.22.0",
