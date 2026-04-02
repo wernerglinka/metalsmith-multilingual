@@ -1,6 +1,6 @@
 import { getByDotPath } from './utils/dot-path.js';
+import { buildHreflang, filepathToUrl } from './utils/hreflang-builder.js';
 import { compilePathPattern, detectLocale } from './utils/locale-detector.js';
-import { filepathToUrl, buildHreflang } from './utils/hreflang-builder.js';
 
 /**
  * @typedef {Object} I18nOptions
@@ -17,7 +17,7 @@ const DEFAULTS = {
   locales: ['en', 'de'],
   pathPattern: '{locale}/**',
   alternateKey: 'seo.alternate',
-  localeLabels: { en: 'English', de: 'Deutsch' }
+  localeLabels: { en: 'English', de: 'Deutsch' },
 };
 
 /**
@@ -31,7 +31,9 @@ function validateConfig(config) {
   }
 
   if (!config.locales.includes(config.defaultLocale)) {
-    throw new Error(`defaultLocale "${config.defaultLocale}" must be included in locales [${config.locales.join(', ')}]`);
+    throw new Error(
+      `defaultLocale "${config.defaultLocale}" must be included in locales [${config.locales.join(', ')}]`
+    );
   }
 
   if (!config.pathPattern.includes('{locale}')) {
@@ -56,7 +58,7 @@ function i18n(options = {}) {
 
   const localePattern = compilePathPattern(config.pathPattern, config.locales);
 
-  const metalsmithPlugin = function (files, metalsmith, done) {
+  const metalsmithPlugin = (files, metalsmith, done) => {
     const debug = metalsmith.debug('metalsmith-i18n');
 
     try {
@@ -64,7 +66,7 @@ function i18n(options = {}) {
         defaultLocale: config.defaultLocale,
         locales: config.locales,
         pathPattern: config.pathPattern,
-        alternateKey: config.alternateKey
+        alternateKey: config.alternateKey,
       });
 
       const metadata = metalsmith.metadata();
@@ -73,9 +75,9 @@ function i18n(options = {}) {
         locales: config.locales.map((code) => ({
           code,
           label: config.localeLabels[code] || code,
-          isDefault: code === config.defaultLocale
+          isDefault: code === config.defaultLocale,
         })),
-        localeLabels: { ...config.localeLabels }
+        localeLabels: { ...config.localeLabels },
       };
 
       const filePaths = Object.keys(files);
@@ -103,7 +105,7 @@ function i18n(options = {}) {
 
   Object.defineProperty(metalsmithPlugin, 'name', {
     value: 'metalsmith-i18n',
-    configurable: true
+    configurable: true,
   });
 
   return metalsmithPlugin;

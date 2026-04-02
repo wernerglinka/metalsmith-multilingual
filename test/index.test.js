@@ -1,7 +1,7 @@
 import assert from 'node:assert';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { describe, it } from 'node:test';
+import { fileURLToPath } from 'node:url';
 import Metalsmith from 'metalsmith';
 import i18n from '../src/index.js';
 
@@ -114,7 +114,7 @@ describe('metalsmith-i18n (ESM)', () => {
         Metalsmith(path.join(__dirname, 'fixtures', 'three-locales')).use(
           i18n({
             locales: ['en', 'de', 'fr'],
-            localeLabels: { en: 'English', de: 'Deutsch', fr: 'Francais' }
+            localeLabels: { en: 'English', de: 'Deutsch', fr: 'Francais' },
           })
         )
       );
@@ -136,7 +136,7 @@ describe('metalsmith-i18n (ESM)', () => {
         Metalsmith(path.join(__dirname, 'fixtures', 'basic')).use(
           i18n({
             defaultLocale: 'de',
-            locales: ['en', 'de']
+            locales: ['en', 'de'],
           })
         )
       );
@@ -151,7 +151,7 @@ describe('metalsmith-i18n (ESM)', () => {
       await process(
         ms.use(
           i18n({
-            localeLabels: { en: 'EN', de: 'DE' }
+            localeLabels: { en: 'EN', de: 'DE' },
           })
         )
       );

@@ -11,7 +11,10 @@
 function compilePathPattern(pathPattern, locales) {
   const escaped = locales.map((locale) => locale.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
   const localeGroup = `(${escaped.join('|')})`;
-  const regexStr = pathPattern.replace('{locale}', localeGroup).replace('**', '.*').replace('*', '[^/]*');
+  const regexStr = pathPattern
+    .replace('{locale}', localeGroup)
+    .replace('**', '.*')
+    .replace('*', '[^/]*');
 
   return new RegExp(`^${regexStr}`);
 }
@@ -28,7 +31,7 @@ function detectLocale(filepath, compiledPattern, defaultLocale) {
   const normalized = filepath.replace(/\\/g, '/');
   const match = normalized.match(compiledPattern);
 
-  if (match && match[1]) {
+  if (match?.[1]) {
     return match[1];
   }
 

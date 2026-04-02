@@ -59,4 +59,4 @@ function buildHreflang(alternateData, selfLocale, selfUrl, defaultLocale) {
   return [...allEntries, xDefault];
 }
 
-export { filepathToUrl, buildHreflang };
+export { buildHreflang, filepathToUrl };

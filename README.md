@@ -154,6 +154,24 @@ The plugin adds an `i18n` object to `metalsmith.metadata()`:
 
 This is available in templates for rendering language switchers, navigation filtering, and other locale-aware UI.
 
+## Development
+
+This plugin uses [Biome](https://biomejs.dev/) for linting and formatting — a single Rust-based tool that replaces both ESLint and Prettier.
+
+```bash
+# Lint and format in one pass (with auto-fix)
+npm run check
+
+# Lint only
+npm run lint
+
+# Format only
+npm run format
+
+# Check without writing (CI mode)
+npm run check:ci
+```
+
 ## Test Coverage
 
 This plugin is tested using Node's built-in test runner (`node:test`) with built-in V8 coverage.

@@ -1,6 +1,6 @@
 import assert from 'node:assert';
 import { describe, it } from 'node:test';
-import { filepathToUrl, buildHreflang } from '../../src/utils/hreflang-builder.js';
+import { buildHreflang, filepathToUrl } from '../../src/utils/hreflang-builder.js';
 
 describe('filepathToUrl', () => {
   it('should convert index.md to /', () => {
@@ -38,7 +38,7 @@ describe('buildHreflang', () => {
     assert.deepStrictEqual(result, [
       { lang: 'en', url: '/' },
       { lang: 'de', url: '/de/' },
-      { lang: 'x-default', url: '/' }
+      { lang: 'x-default', url: '/' },
     ]);
   });
 
@@ -47,7 +47,7 @@ describe('buildHreflang', () => {
     assert.deepStrictEqual(result, [
       { lang: 'de', url: '/de/' },
       { lang: 'en', url: '/' },
-      { lang: 'x-default', url: '/' }
+      { lang: 'x-default', url: '/' },
     ]);
   });
 
