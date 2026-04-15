@@ -1,6 +1,6 @@
 {
   "name": "metalsmith-multilingual",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "A Metalsmith plugin that adds internationalization metadata to files based on directory structure and frontmatter alternate links",
   "type": "module",
   "main": "./src/index.js",
