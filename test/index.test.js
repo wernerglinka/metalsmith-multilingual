@@ -37,9 +37,7 @@ describe('metalsmith-multilingual', () => {
 
   describe('basic locale detection', () => {
     it('should set locale on each file', async () => {
-      const files = await process(
-        Metalsmith(path.join(__dirname, 'fixtures', 'basic')).use(multilingual())
-      );
+      const files = await process(Metalsmith(path.join(__dirname, 'fixtures', 'basic')).use(multilingual()));
       assert.strictEqual(files['index.md'].locale, 'en');
       assert.strictEqual(files['works/2026.03.002.md'].locale, 'en');
       assert.strictEqual(files['de/index.md'].locale, 'de');
@@ -47,9 +45,7 @@ describe('metalsmith-multilingual', () => {
     });
 
     it('should set isDefaultLocale correctly', async () => {
-      const files = await process(
-        Metalsmith(path.join(__dirname, 'fixtures', 'basic')).use(multilingual())
-      );
+      const files = await process(Metalsmith(path.join(__dirname, 'fixtures', 'basic')).use(multilingual()));
       assert.strictEqual(files['index.md'].isDefaultLocale, true);
       assert.strictEqual(files['works/2026.03.002.md'].isDefaultLocale, true);
       assert.strictEqual(files['de/index.md'].isDefaultLocale, false);
@@ -59,9 +55,7 @@ describe('metalsmith-multilingual', () => {
 
   describe('hreflang generation', () => {
     it('should build hreflang with self + alternate + x-default', async () => {
-      const files = await process(
-        Metalsmith(path.join(__dirname, 'fixtures', 'basic')).use(multilingual())
-      );
+      const files = await process(Metalsmith(path.join(__dirname, 'fixtures', 'basic')).use(multilingual()));
       const hreflang = files['index.md'].hreflang;
       assert.strictEqual(hreflang.length, 3);
       assert.ok(hreflang.find((e) => e.lang === 'en' && e.url === '/'));
@@ -70,9 +64,7 @@ describe('metalsmith-multilingual', () => {
     });
 
     it('should build hreflang for German pages', async () => {
-      const files = await process(
-        Metalsmith(path.join(__dirname, 'fixtures', 'basic')).use(multilingual())
-      );
+      const files = await process(Metalsmith(path.join(__dirname, 'fixtures', 'basic')).use(multilingual()));
       const hreflang = files['de/werke/2026.03.002.md'].hreflang;
       assert.strictEqual(hreflang.length, 3);
       assert.ok(hreflang.find((e) => e.lang === 'de' && e.url === '/de/werke/2026.03.002/'));
@@ -98,9 +90,7 @@ describe('metalsmith-multilingual', () => {
 
   describe('no alternates', () => {
     it('should produce self-only hreflang when no alternate data exists', async () => {
-      const files = await process(
-        Metalsmith(path.join(__dirname, 'fixtures', 'no-alternates')).use(multilingual())
-      );
+      const files = await process(Metalsmith(path.join(__dirname, 'fixtures', 'no-alternates')).use(multilingual()));
       const hreflang = files['index.md'].hreflang;
       assert.strictEqual(hreflang.length, 1);
       assert.strictEqual(hreflang[0].lang, 'en');

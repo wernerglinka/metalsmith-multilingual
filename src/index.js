@@ -31,7 +31,9 @@ function validateConfig(config) {
   }
 
   if (!config.locales.includes(config.defaultLocale)) {
-    throw new Error(`defaultLocale "${config.defaultLocale}" must be included in locales [${config.locales.join(', ')}]`);
+    throw new Error(
+      `defaultLocale "${config.defaultLocale}" must be included in locales [${config.locales.join(', ')}]`
+    );
   }
 
   if (!config.pathPattern.includes('{locale}')) {

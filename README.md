@@ -154,6 +154,72 @@ The plugin adds a `multilingual` object to `metalsmith.metadata()`:
 
 This is available in templates for rendering language switchers, navigation filtering, and other locale-aware UI.
 
+## Examples
+
+### Rendering hreflang tags in a layout
+
+Using the per-file `hreflang` array to emit `<link rel="alternate">` tags in an HTML `<head>` (Nunjucks):
+
+```njk
+{% for entry in hreflang %}
+  <link rel="alternate" hreflang="{{ entry.lang }}" href="https://example.com{{ entry.url }}">
+{% endfor %}
+```
+
+### Building a language switcher
+
+Using the global `multilingual` metadata together with the per-file `hreflang` data (Nunjucks):
+
+```njk
+<nav aria-label="Language">
+  <ul>
+    {% for locale in multilingual.locales %}
+      {% set target = hreflang | selectattr('lang', 'equalto', locale.code) | first %}
+      <li>
+        <a href="{{ target.url }}" {% if locale.code == page.locale %}aria-current="true"{% endif %}>
+          {{ locale.label }}
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+</nav>
+```
+
+### Filtering a collection by locale
+
+Combine with `@metalsmith/collections` to render per-locale index pages by filtering on the `locale` property added by this plugin:
+
+```js
+import Metalsmith from 'metalsmith';
+import collections from '@metalsmith/collections';
+import multilingual from 'metalsmith-multilingual';
+
+Metalsmith(__dirname)
+  .use(multilingual({ locales: ['en', 'de'] }))
+  .use(
+    collections({
+      worksEn: { pattern: 'works/*.md', refer: false },
+      worksDe: { pattern: 'de/werke/*.md', refer: false }
+    })
+  )
+  .build((err) => {
+    if (err) throw err;
+  });
+```
+
+### Non-default locale prefix structure
+
+If your English content lives under `en/` instead of at the root, set `defaultLocale` accordingly — the plugin still detects each file from its path:
+
+```js
+multilingual({
+  defaultLocale: 'en',
+  locales: ['en', 'de', 'fr'],
+  pathPattern: '{locale}/**',
+  localeLabels: { en: 'English', de: 'Deutsch', fr: 'Français' }
+});
+```
+
 ## Test Coverage
 
 This plugin is tested using Node's built-in test runner (`node:test`) with built-in V8 coverage.

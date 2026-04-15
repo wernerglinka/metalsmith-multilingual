@@ -17,7 +17,7 @@ list-templates
 # Get specific template content (use these exactly as provided)
 get-template plugin/CLAUDE.md
 get-template configs/release-it.json
-get-template configs/eslint.config.js
+get-template configs/biome.json
 
 # Validate plugin and get actionable recommendations
 validate .
@@ -27,7 +27,7 @@ configs .
 
 # Show recommended configuration templates
 show-template release-it
-show-template eslint
+show-template biome
 
 # Update dependencies
 update-deps .
@@ -57,6 +57,69 @@ update-deps .
 - Follow validation recommendations exactly as provided
 - Ask for clarification when commands seem confusing
 - Always use official templates verbatim
+
+### Migration from Legacy Toolchain (v2.0.0+)
+
+**IMPORTANT FOR AI ASSISTANTS**: Before working on this plugin, check whether it is still on the pre-2.0 toolchain. The MCP server now scaffolds plugins with **Biome** (lint + format), the **native `node:test` runner**, and **native coverage**. Plugins created before v2.0.0 may still use ESLint, Prettier, Mocha, Chai, and c8, and must be migrated before this CLAUDE.md accurately describes the project.
+
+**Detection — the plugin is on the legacy toolchain if ANY of these are true:**
+
+- Files present: `eslint.config.js`, `.eslintrc*`, `prettier.config.js`, `.prettierrc*`, `.c8rc.json`, `.mocharc.*`
+- `package.json` devDependencies include: `eslint`, `eslint-config-prettier`, `eslint-plugin-prettier`, `prettier`, `mocha`, `chai`, `c8`, `nyc`
+- Test files import from `mocha` or `chai`
+- `package.json` contains a `"mocha"` config block
+- `engines.node` is less than `>= 22.0.0`
+
+**Migration steps — execute in order, stopping to confirm with the user before running destructive commands:**
+
+1. **Delete legacy config files:**
+
+   ```bash
+   rm -f eslint.config.js .eslintrc* prettier.config.js .prettierrc* .c8rc.json .mocharc.*
+   ```
+
+2. **Generate the Biome config:**
+
+   ```bash
+   npx metalsmith-plugin-mcp-server configs . --configs biome
+   ```
+
+3. **Update `package.json`:**
+   - Remove devDeps: `eslint`, `eslint-config-prettier`, `eslint-plugin-prettier`, `prettier`, `mocha`, `chai`, `c8`, `nyc`
+   - Add devDep: `@biomejs/biome` (latest `^2.x`)
+   - Remove the `"mocha"` block if present
+   - Replace scripts — use `show-template package-scripts` to retrieve the current set verbatim; do NOT improvise
+   - Bump `engines.node` to `">= 22.0.0"`
+
+4. **Rewrite test imports** (manual — cannot be automated safely):
+   - `import { describe, it, before, after, beforeEach, afterEach } from 'mocha'` → `from 'node:test'`
+   - `import { expect } from 'chai'` → `import assert from 'node:assert/strict'`
+   - Convert assertions:
+     - `expect(x).to.equal(y)` → `assert.equal(x, y)`
+     - `expect(x).to.deep.equal(y)` → `assert.deepEqual(x, y)`
+     - `expect(x).to.be.a('function')` → `assert.equal(typeof x, 'function')`
+     - `expect(x).to.be.true` → `assert.equal(x, true)`
+     - `expect(fn).to.throw()` → `assert.throws(fn)`
+   - Callback-style tests: `it('name', (done) => {...})` → `it('name', (_t, done) => {...})`
+   - Rename test files to match `test/**/*.test.js` and `test/**/*.test.cjs` glob
+
+5. **Reinstall and verify:**
+
+   ```bash
+   rm -rf node_modules package-lock.json
+   npm install
+   npm run lint
+   npm test
+   npm run coverage
+   ```
+
+6. **Run full validation:**
+
+   ```bash
+   npx metalsmith-plugin-mcp-server validate . --functional
+   ```
+
+**Do NOT proceed with normal development tasks if legacy toolchain files are detected — migrate first so this CLAUDE.md accurately reflects the project.**
 
 ### Quick Commands
 
