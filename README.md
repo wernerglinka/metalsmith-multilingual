@@ -7,7 +7,6 @@ A Metalsmith plugin that adds internationalization metadata to files based on di
 [![license: MIT][license-badge]][license-url]
 [![coverage][coverage-badge]][coverage-url]
 [![ESM][modules-badge]][npm-url]
-[![Known Vulnerabilities](https://snyk.io/test/npm/metalsmith-multilingual/badge.svg)](https://snyk.io/test/npm/metalsmith-multilingual)
 [![AI-assisted development](https://img.shields.io/badge/AI-assisted-blue)](https://github.com/wernerglinka/metalsmith-multilingual/blob/main/CLAUDE.md)
 
 > This Metalsmith plugin is under active development. The API is stable, but breaking changes may occur before reaching 1.0.0.
