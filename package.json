@@ -9,7 +9,7 @@
   },
   "scripts": {
     "changelog": "auto-changelog -u --commit-limit false --ignore-commit-pattern '^((dev|chore|ci):|Release)'",
-    "coverage": "./scripts/test.sh --test-reporter=lcov --test-reporter-destination=coverage/lcov.info --test-reporter=spec --test-reporter-destination=stdout",
+    "coverage": "mkdir -p coverage && ./scripts/test.sh --test-reporter=lcov --test-reporter-destination=coverage/lcov.info --test-reporter=spec --test-reporter-destination=stdout",
     "format": "biome format --write .",
     "format:check": "biome format .",
     "lint": "biome check --write .",
@@ -19,7 +19,7 @@
     "release:major": "./scripts/release.sh major --ci",
     "release:check": "npm run lint:check && release-it --dry-run",
     "test": "./scripts/test.sh",
-    "test:coverage": "./scripts/test.sh --test-reporter=lcov --test-reporter-destination=coverage/lcov.info --test-reporter=spec --test-reporter-destination=stdout",
+    "test:coverage": "mkdir -p coverage && ./scripts/test.sh --test-reporter=lcov --test-reporter-destination=coverage/lcov.info --test-reporter=spec --test-reporter-destination=stdout",
     "test:unit": "node --test test/unit/dot-path.test.js test/unit/locale-detector.test.js test/unit/hreflang-builder.test.js"
   },
   "repository": {
