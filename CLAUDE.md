@@ -58,68 +58,61 @@ update-deps .
 - Ask for clarification when commands seem confusing
 - Always use official templates verbatim
 
-### Migration from Legacy Toolchain (v2.0.0+)
+### Migration from Legacy Toolchain / Dual Build
 
-**IMPORTANT FOR AI ASSISTANTS**: Before working on this plugin, check whether it is still on the pre-2.0 toolchain. The MCP server now scaffolds plugins with **Biome** (lint + format), the **native `node:test` runner**, and **native coverage**. Plugins created before v2.0.0 may still use ESLint, Prettier, Mocha, Chai, and c8, and must be migrated before this CLAUDE.md accurately describes the project.
+**IMPORTANT FOR AI ASSISTANTS**: Before working on this plugin, check whether it still uses the pre-v3.0.0 dual ESM/CJS build, or the pre-v2.0.0 mocha/eslint/c8 toolchain. The MCP server now scaffolds **ESM-only** plugins using **Biome**, the **native `node:test` runner**, and **native coverage**. Published directly from `src/` — no build step, no `lib/`, no microbundle.
 
-**Detection — the plugin is on the legacy toolchain if ANY of these are true:**
+**Detection — the plugin needs migration if ANY of these are true:**
 
-- Files present: `eslint.config.js`, `.eslintrc*`, `prettier.config.js`, `.prettierrc*`, `.c8rc.json`, `.mocharc.*`
-- `package.json` devDependencies include: `eslint`, `eslint-config-prettier`, `eslint-plugin-prettier`, `prettier`, `mocha`, `chai`, `c8`, `nyc`
-- Test files import from `mocha` or `chai`
-- `package.json` contains a `"mocha"` config block
+- `package.json` has `main`, `module`, or dual `exports.import` / `exports.require` fields
+- `package.json` devDeps include `microbundle`, `eslint`, `prettier`, `mocha`, `chai`, `c8`, `nyc`
+- `package.json` scripts include `build`, `test:esm`, `test:cjs`, or `prepublishOnly: npm run build`
+- Files present: `lib/`, `eslint.config.js`, `.eslintrc*`, `prettier.config.js`, `.c8rc.json`, `.mocharc.*`, `test/**/*.test.cjs`
 - `engines.node` is less than `>= 22.0.0`
 
 **Migration steps — execute in order, stopping to confirm with the user before running destructive commands:**
 
-1. **Delete legacy config files:**
+1. **Delete legacy files:**
 
    ```bash
+   rm -rf lib/
    rm -f eslint.config.js .eslintrc* prettier.config.js .prettierrc* .c8rc.json .mocharc.*
+   rm -f test/**/*.test.cjs
    ```
 
-2. **Generate the Biome config:**
+2. **Rewrite `package.json`** — use `get-template plugin/package.json` as the source of truth:
+   - Remove `main`, `module`; set `"exports": "./src/index.js"`
+   - Set `files: ["src/**/*.js", "LICENSE", "README.md"]`
+   - Remove scripts: `build`, `test:esm`, `test:cjs`, `prepublishOnly`
+   - Remove devDeps: `microbundle`, `eslint`, `prettier`, `mocha`, `chai`, `c8`, `nyc`
+   - Add devDep: `@biomejs/biome` (latest `^2.x`)
+   - Bump `engines.node` to `">= 22.0.0"`
+
+3. **Generate the Biome config:**
 
    ```bash
    npx metalsmith-plugin-mcp-server configs . --configs biome
    ```
 
-3. **Update `package.json`:**
-   - Remove devDeps: `eslint`, `eslint-config-prettier`, `eslint-plugin-prettier`, `prettier`, `mocha`, `chai`, `c8`, `nyc`
-   - Add devDep: `@biomejs/biome` (latest `^2.x`)
-   - Remove the `"mocha"` block if present
-   - Replace scripts — use `show-template package-scripts` to retrieve the current set verbatim; do NOT improvise
-   - Bump `engines.node` to `">= 22.0.0"`
-
 4. **Rewrite test imports** (manual — cannot be automated safely):
    - `import { describe, it, before, after, beforeEach, afterEach } from 'mocha'` → `from 'node:test'`
    - `import { expect } from 'chai'` → `import assert from 'node:assert/strict'`
-   - Convert assertions:
-     - `expect(x).to.equal(y)` → `assert.equal(x, y)`
-     - `expect(x).to.deep.equal(y)` → `assert.deepEqual(x, y)`
-     - `expect(x).to.be.a('function')` → `assert.equal(typeof x, 'function')`
-     - `expect(x).to.be.true` → `assert.equal(x, true)`
-     - `expect(fn).to.throw()` → `assert.throws(fn)`
+   - Convert assertions: `expect(x).to.equal(y)` → `assert.equal(x, y)`, `expect(x).to.deep.equal(y)` → `assert.deepEqual(x, y)`, `expect(x).to.be.true` → `assert.equal(x, true)`, `expect(fn).to.throw()` → `assert.throws(fn)`
    - Callback-style tests: `it('name', (done) => {...})` → `it('name', (_t, done) => {...})`
-   - Rename test files to match `test/**/*.test.js` and `test/**/*.test.cjs` glob
 
-5. **Reinstall and verify:**
+5. **Update README examples** — replace `__dirname` with `import.meta.dirname`, remove any `require()` usage of this plugin, drop the ESM/CJS badge
+
+6. **Reinstall and verify:**
 
    ```bash
    rm -rf node_modules package-lock.json
    npm install
    npm run lint
    npm test
-   npm run coverage
-   ```
-
-6. **Run full validation:**
-
-   ```bash
    npx metalsmith-plugin-mcp-server validate . --functional
    ```
 
-**Do NOT proceed with normal development tasks if legacy toolchain files are detected — migrate first so this CLAUDE.md accurately reflects the project.**
+**Do NOT proceed with normal development tasks if legacy toolchain files or dual-build artifacts are detected — migrate first so this CLAUDE.md accurately reflects the project.**
 
 ### Quick Commands
 
@@ -139,7 +132,6 @@ npm run release:major   # Breaking changes (1.5.4 → 2.0.0)
 
 **Development:**
 ```bash
-npm run build          # Build ESM/CJS versions
 npm run test:coverage  # Run tests with detailed coverage
 ```
 
