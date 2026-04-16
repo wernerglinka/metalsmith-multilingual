@@ -38,7 +38,7 @@ Pass `metalsmith-multilingual` to `metalsmith.use`:
 import Metalsmith from 'metalsmith';
 import multilingual from 'metalsmith-multilingual';
 
-Metalsmith(__dirname)
+Metalsmith(import.meta.dirname)
   .use(multilingual())
   .build((err) => {
     if (err) throw err;
@@ -51,7 +51,7 @@ Metalsmith(__dirname)
 import Metalsmith from 'metalsmith';
 import multilingual from 'metalsmith-multilingual';
 
-Metalsmith(__dirname)
+Metalsmith(import.meta.dirname)
   .use(
     multilingual({
       defaultLocale: 'en',
@@ -194,7 +194,7 @@ import Metalsmith from 'metalsmith';
 import collections from '@metalsmith/collections';
 import multilingual from 'metalsmith-multilingual';
 
-Metalsmith(__dirname)
+Metalsmith(import.meta.dirname)
   .use(multilingual({ locales: ['en', 'de'] }))
   .use(
     collections({

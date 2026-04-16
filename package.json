@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "description": "A Metalsmith plugin that adds internationalization metadata to files based on directory structure and frontmatter alternate links",
   "type": "module",
-  "main": "./src/index.js",
   "exports": "./src/index.js",
   "engines": {
     "node": ">= 22.0.0"
@@ -21,8 +20,7 @@
     "release:check": "npm run lint:check && release-it --dry-run",
     "test": "./scripts/test.sh",
     "test:coverage": "./scripts/test.sh --test-reporter=lcov --test-reporter-destination=coverage/lcov.info --test-reporter=spec --test-reporter-destination=stdout",
-    "test:unit": "node --test test/unit/dot-path.test.js test/unit/locale-detector.test.js test/unit/hreflang-builder.test.js",
-    "test:esm": "node --test test/index.test.js"
+    "test:unit": "node --test test/unit/dot-path.test.js test/unit/locale-detector.test.js test/unit/hreflang-builder.test.js"
   },
   "repository": {
     "type": "git",
