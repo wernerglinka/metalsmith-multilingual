@@ -277,4 +277,4 @@ All AI-assisted code has been reviewed and tested to ensure it meets project sta
 [license-url]: LICENSE
 [coverage-badge]: https://img.shields.io/badge/test%20coverage-99%25-brightgreen
 [coverage-url]: #test-coverage
-[modules-badge]: https://img.shields.io/badge/modules-ESM-blue
+[modules-badge]: https://img.shields.io/badge/module-ESM-blue
